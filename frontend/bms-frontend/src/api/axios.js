@@ -5,5 +5,6 @@ export const axiosInstance = axios.create({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem("token")}`
     },
-    baseURL: "http://localhost:3000"
+    // baseURL: "http://localhost:3000"
+    baseURL: "https://bookmyshow-backend-yxcm.onrender.com"
 });
