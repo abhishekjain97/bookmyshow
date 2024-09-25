@@ -26,7 +26,6 @@ app.use("/api/bookings", bookingRouter)
 const { connectDB } = require("./config/db")
 connectDB()
 
-
 app.listen(process.env.PORT, () => {
     console.log("Backend application has been started!");
 })

@@ -43,7 +43,7 @@ function ProtectedRoute({ children }) {
             <span
             onClick={() => {
               if (user.role === 'Admin') {
-                navigate("/admin");
+                navigate("/home");
               } else if (user.role === 'Partner') {
                 navigate("/partner");
               } else {
@@ -63,6 +63,7 @@ function ProtectedRoute({ children }) {
               to="/login"
               onClick={() => {
                 localStorage.removeItem("token");
+                window.location.reload()
               }}
             >
               Log Out
@@ -117,7 +118,7 @@ function ProtectedRoute({ children }) {
             }}
           >
             <h3 className="demo-logo text-white m-0" style={{ color: "white" }}>
-              Book My Show
+              Movie Online
             </h3>
             <Menu theme="dark" mode="horizontal" items={navItems} />
           </Header>

@@ -25,8 +25,11 @@ theatreRouter.post("/add-theatre", authMiddlewares, async (req, res) => {
 })
 
 theatreRouter.get("/get-all-theatres", authMiddlewares, async (req, res) => {
+
     try {
         const data = await Theatre.find()
+        console.log(data);
+        
         return res.send({
             status: true,
             message: "Theatre fetched!",

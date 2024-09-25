@@ -3,7 +3,7 @@ const UserModel = require("../model/userModel")
 const userRouter = express.Router()
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-
+const emailHelper = require('../config/emailHelper');
 const validator = require("email-validator")
 const authMiddlewares = require("../middlewares/authMiddlewares")
 
@@ -142,6 +142,104 @@ userRouter.get("/get-current-user", authMiddlewares, async (req, res) => {
             status: true,
             user
         })
+    } catch (error) {
+        res.status(500).send({
+            status: false,
+            message: "Somethis went wrong! Try again"
+        })
+    }
+})
+
+
+userRouter.post("/reset-password", async (req, res) => {
+    try {
+        const email = req.body.email
+        const user = await UserModel.findOne({email: email})
+        if(!user) {
+            return res.status(404).send({
+                status: false,
+                message: "Invalid email address"
+            })
+        } 
+
+        const otp = Math.floor(Math.random() * 10000)
+        
+        await emailHelper("otp.html", user.email, {
+            name: user.name,
+            otp: otp
+        });
+
+        await UserModel.findOneAndUpdate({ email: req.body.email }, { otp: otp })
+
+        return res.send({
+            status: true,
+            message: "Otp send to your email address"
+        })
+        
+    } catch (error) {
+        res.status(500).send({
+            status: false,
+            message: "Somethis went wrong! Try again"
+        })
+    }
+})
+
+userRouter.post("/validate-otp", async (req, res) => {
+    try {
+        const email = req.body.email
+        const otp = parseInt(req.body.otp)
+        const user = await UserModel.findOne({email: email})
+        if(!user) {
+            return res.status(404).send({
+                status: false,
+                message: "Invalid email address"
+            })
+        }
+        
+        if(otp !== user.otp) {
+            return res.status(404).send({
+                status: false,
+                message: "Invalid otp"
+            })
+        }
+
+        return res.send({
+            status: true,
+            message: "otp authenticated successfully"
+        })
+        
+    } catch (error) {
+        res.status(500).send({
+            status: false,
+            message: "Somethis went wrong! Try again"
+        })
+    }
+})
+
+userRouter.post("/new-password", async (req, res) => {
+    console.log(req.body);
+    
+    try {
+        const email = req.body.email
+        const password = req.body.password
+
+        const salt = await bcrypt.genSalt(SALT_ROUNDS)
+        const hashedPassword = await bcrypt.hash(password, salt)
+
+
+        const user = await UserModel.findOneAndUpdate({ email: email }, { password: hashedPassword }, { new: true })
+        if(!user) {
+            return res.status(404).send({
+                status: false,
+                message: "Password not updated"
+            })
+        }
+
+        return res.send({
+            status: true,
+            message: "Password reset successfully"
+        })
+        
     } catch (error) {
         res.status(500).send({
             status: false,

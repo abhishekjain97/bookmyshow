@@ -23,6 +23,10 @@ const userSchemaRules = {
         type: String,
         required: true,
         default: "User"
+    },
+    otp: {
+        type: Number,
+        default: null
     }
 }
 

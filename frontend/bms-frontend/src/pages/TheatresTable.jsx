@@ -12,6 +12,8 @@ const TheatresTable = () => {
         try{
           dispatch(showLoading());
           const response = await getAllTheatres();
+          console.log(response);
+          
           if(response.status){
             const allTheatres = response.data;
             setTheatres(
@@ -25,6 +27,8 @@ const TheatresTable = () => {
           dispatch(hideLoading())
   
         }catch(err){
+          console.log(err);
+          
           dispatch(hideLoading());
           message.error(err.message);
         }
@@ -111,7 +115,7 @@ const TheatresTable = () => {
 
     return(
       <>
-        {theatres && theatres.length > 0 && <Table dataSource={theatres} columns={columns} />}
+        {theatres && <Table dataSource={theatres} columns={columns} />}
       </>
     )
 }
